@@ -1,0 +1,44 @@
+[
+    {
+        "name": "The Overlook Hotel",
+        "location": "Colorado, USA",
+        "rooms_available": 100,
+        "cost_per_room": 150,
+        "rating": 4.5
+    },
+    {
+        "name": "The Grand Budapest Hotel",
+        "location": "Zubrowka",
+        "rooms_available": 200,
+        "cost_per_room": 250,
+        "rating": 4.8
+    },
+    {
+        "name": "The Empire Hotel",
+        "location": "San Francisco, USA",
+        "rooms_available": 150,
+        "cost_per_room": 200,
+        "rating": 4.4
+    },
+    {
+        "name": "Bates Motel",
+        "location": "California, USA",
+        "rooms_available": 12,
+        "cost_per_room": 75,
+        "rating": 3.2
+    },
+    {
+        "name": "Kellerman's Mountain House",
+        "location": "Catskills, New York, USA",
+        "rooms_available": 100,
+        "cost_per_room": 180,
+        "rating": 4.6
+    },
+    {
+        "name": "Park Hyatt Tokyo",
+        "location": "Tokyo, Japan",
+        "rooms_available": 177,
+        "cost_per_room": 350,
+        "rating": 4.9
+    }
+]
