@@ -1,5 +1,8 @@
 import json
 
+def opening_sequence():
+
+def closing_sequence():
 
 
 # json.dumps(data) dump string not file
