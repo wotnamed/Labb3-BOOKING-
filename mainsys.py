@@ -29,6 +29,7 @@ def sort_hotels(hotels_data, k, reverse):
     return hotels_data
 
 
+
 while True:
     data = get_data()
     request = input()
