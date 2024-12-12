@@ -9,3 +9,5 @@ def get_data():
     return hotel_list
 
 get_data()
+
+#Hjewdå
