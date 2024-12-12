@@ -2,7 +2,7 @@
     {
         "name": "The Overlook Hotel",
         "location": "Colorado, USA",
-        "rooms_available": 100,
+        "rooms_available": 99,
         "cost_per_room": 150,
         "rating": 4.5
     },
@@ -30,7 +30,7 @@
     {
         "name": "Kellerman's Mountain House",
         "location": "Catskills, New York, USA",
-        "rooms_available": 100,
+        "rooms_available": 98,
         "cost_per_room": 180,
         "rating": 4.6
     },

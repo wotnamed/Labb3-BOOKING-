@@ -64,7 +64,7 @@ def create_booking(hotels_data, bookings_data):
     print(' ')
     confirmation = input('Confirm booking? (yes/no): ')
 
-    if confirmation.lower() == "no":
+    if confirmation.lower() == "no" or "n":
         return print('Cancelled booking.')
 
     bookings_data.append(new_booking)
@@ -79,11 +79,24 @@ def create_booking(hotels_data, bookings_data):
 
     print('Booking successfully created.')
 
+def display_bookings(bookings_data):
+    print("The following is the documented bookings, yes?")
+    for bobject in bookings_data:
+        keys = list(bobject.keys())
+        bookie = list(bobject.values())
+
+        for p in range(len(bookie)):
+            if p == 0:
+                print(f'{bookie[p]}')
+            else:
+                print(f'    {keys[p]}: {bookie[p]}')
+
 while True:
     data = get_data()
     bookings = get_bookings()
     request = input()
-
+    if request.lower() == "bookings":
+        display_bookings(bookings)
     if request.lower() == "hotels":
         display_hotels(data)
     if request.lower() == "sort":
@@ -97,3 +110,4 @@ while True:
         display_hotels(data)
     if request.lower() == "create booking":
         create_booking(data, bookings)
+
