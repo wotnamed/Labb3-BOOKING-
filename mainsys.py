@@ -47,6 +47,8 @@ def search_by_location(hotels_data, location):
 
     return hotels
 
+def remove_booking(hotels_data, bookings_data):
+    pass
 def create_booking(hotels_data, bookings_data):
     user = input("Name: ")
     hotel = input("Hotel: ")
@@ -95,25 +97,30 @@ def create_booking(hotels_data, bookings_data):
 
     print('Booking successfully created.')
 
-def display_bookings(bookings_data):
+def display_bookings(bookings_data, show_index):
     if len(bookings_data) == 0: return print('No bookings to display.')
     print("The following is the documented bookings, yes?")
     for bobject in bookings_data:
         keys = list(bobject.keys())
         bookie = list(bobject.values())
+        bookie_index = bookings_data.index(bobject)
 
         for p in range(len(bookie)):
             if p == 0:
                 print(f'{bookie[p]}')
             else:
                 print(f'    {keys[p]}: {bookie[p]}')
+        if show_index == True:
+            print(f'    index: {bookie_index}')
 
 while True:
     data = get_data()
     bookings = get_bookings()
     request = input()
     if request.lower() == "bookings":
-        display_bookings(bookings)
+        display_bookings(bookings, False)
+    elif request.lower() == "bookings index":
+        display_bookings(bookings, True)
     elif request.lower() == "hotels":
         display_hotels(data)
     elif request.lower() == "sort":
