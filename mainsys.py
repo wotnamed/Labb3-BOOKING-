@@ -1,14 +1,28 @@
 import json
+import os
+
+def clear():
+    os.system("cls")
 
 def get_data():
-    with open("hotels.json", "r") as e:
-        hotel_list = json.load(e)
+    try:
+        with open("hotels.json", "r") as file:
+            hotel_list = json.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError("hotels.json not found.")
+    except json.JSONDecodeError:
+        raise ValueError("hotels.json is not a valid JSON file.")
 
     return hotel_list
 
 def get_bookings():
-    with open("bookings.json", "r") as file:
-        bookings_list = json.load(file)
+    try:
+        with open("bookings.json", "r") as file:
+            bookings_list = json.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError("bookings.json not found.")
+    except json.JSONDecodeError:
+        raise ValueError("bookings.json is not a valid JSON file.")
 
     return bookings_list
 
@@ -40,7 +54,7 @@ def search_by_location(hotels_data, location):
     try:
         hotels = list(filter(lambda hotels_data : hotels_data['location'].lower() == location.lower(), hotels_data))[0]
     except IndexError:
-        return print('No hotel found.')
+        raise ValueError('No hotel found.')
 
     for hotel in hotels:
         print(hotel)
@@ -49,24 +63,29 @@ def search_by_location(hotels_data, location):
 
 def remove_booking(hotels_data, bookings_data):
     pass
+
 def create_booking(hotels_data, bookings_data):
     user = input("Name: ")
     hotel = input("Hotel: ")
-    nights = int(input("Amount of nights: "))
-    rooms = int(input("Amount of rooms: "))
+
+    try:
+        nights = int(input("Amount of nights: "))
+        rooms = int(input("Amount of rooms: "))
+    except ValueError:
+        raise ValueError("Nights and rooms must be integers.")
+
+    if (nights or rooms) <= 0:
+        raise ValueError("Nights and rooms must be greater than 0.")
 
     try:
         hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
     except IndexError:
-        return print('Hotel does not exist.')
+        raise ValueError("Hotel does not exist.")
 
     total_cost = nights * rooms * hotel['cost_per_room']
 
     if rooms > hotel['rooms_available']:
-        return print('Not enough rooms available.')
-
-    if (nights or rooms) == 0:
-        return print('You cannot book 0 nights or rooms.')
+        raise ValueError('Not enough rooms available.')
 
     new_booking = {
         "booking name": user,
@@ -81,25 +100,29 @@ def create_booking(hotels_data, bookings_data):
         print(f'{e.capitalize()}: {new_booking[e]}')
     print(' ')
     confirmation = input('Confirm booking? (yes/no): ')
-
     if confirmation.lower() == ("no" or "n"):
-        return print('Cancelled booking.')
+        raise Exception('Booking cancelled by user.')
 
     bookings_data.append(new_booking)
-
     hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms
 
-    with open("bookings.json", "w") as file:
-        json.dump(bookings_data, file, indent=4)
+    try:
+        with open("bookings.json", "w") as file:
+            json.dump(bookings_data, file, indent=4)
 
-    with open("hotels.json", "w") as file:
-        json.dump(hotels_data, file, indent=4)
+        with open("hotels.json", "w") as file:
+            json.dump(hotels_data, file, indent=4)
+    except FileNotFoundError:
+        raise FileNotFoundError("JSON file not found.")
+    except json.JSONDecodeError:
+        raise ValueError("File is not a valid JSON file.")
 
     print('Booking successfully created.')
 
 def display_bookings(bookings_data, show_index):
-    if len(bookings_data) == 0: return print('No bookings to display.')
-    print("The following is the documented bookings, yes?")
+    if not bookings_data:
+        raise ValueError("No bookings to display.")
+
     for bobject in bookings_data:
         keys = list(bobject.keys())
         bookie = list(bobject.values())
@@ -110,33 +133,40 @@ def display_bookings(bookings_data, show_index):
                 print(f'{bookie[p]}')
             else:
                 print(f'    {keys[p]}: {bookie[p]}')
-        if show_index == True:
+        if show_index:
             print(f'    index: {bookie_index}')
 
 while True:
     data = get_data()
     bookings = get_bookings()
     request = input()
-    if request.lower() == "bookings":
-        display_bookings(bookings, False)
-    elif request.lower() == "bookings index":
-        display_bookings(bookings, True)
-    elif request.lower() == "hotels":
-        display_hotels(data)
-    elif request.lower() == "sort":
-        key = input('Sort by property: ')
-        order = input('Ascending/descending: ')
 
-        if order.lower() == 'ascending': order = False
-        else: order = True
+    clear()
 
-        try:
-            data = sort_hotels(data, key, order)
+    try:
+        if request.lower() == "bookings":
+            display_bookings(bookings, False)
+        elif request.lower() == "bookings index":
+            display_bookings(bookings, True)
+        elif request.lower() == "hotels":
             display_hotels(data)
-        except TypeError:
-            print('List cannot be sorted by that property.')
-    if request.lower() == "create booking":
-        create_booking(data, bookings)
-    elif request.lower() == "search by location":
-        loc = input("Search for: ")
-        search_by_location(data, loc)
+        elif request.lower() == "sort":
+            key = input('Sort by property: ')
+            order = input('Ascending/descending: ')
+
+            if order.lower() == 'ascending': order = False
+            else: order = True
+
+            try:
+                data = sort_hotels(data, key, order)
+                display_hotels(data)
+            except TypeError:
+                print('List cannot be sorted by that property.')
+        elif request.lower() == "create booking":
+            create_booking(data, bookings)
+        elif request.lower() == "search by location":
+            loc = input("Search for: ")
+            search_by_location(data, loc)
+
+    except Exception as e:
+        print(f"Error: {e}")
