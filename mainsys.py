@@ -1,5 +1,6 @@
 import json
 import os
+import pytest
 
 def clear():
     os.system("cls")
@@ -40,9 +41,9 @@ def display_hotels(hotels_data):
                 print(f'    {keys[p]}: {hotel[p]}')
 
 def sort_hotels(hotels_data, k, reverse):
-    def a(e):
+    def a(i):
         try:
-            return e[k]
+            return i[k]
         except KeyError:
             pass
 
@@ -154,39 +155,43 @@ def display_bookings(bookings_data, show_index):
         if show_index:
             print(f'    index: {bookie_index}')
 
-while True:
-    data = get_data()
-    bookings = get_bookings()
-    request = input()
+if __name__ == "__main__":
+    while True:
+        data = get_data()
+        bookings = get_bookings()
+        request = input()
 
-    clear()
+        clear()
 
-    try:
-        if request.lower() == "bookings":
-            display_bookings(bookings, False)
-        elif request.lower() == "bookings index":
-            display_bookings(bookings, True)
-        elif request.lower() == "hotels":
-            display_hotels(data)
-        elif request.lower() == "sort":
-            key = input('Sort by property: ')
-            order = input('Ascending/descending: ')
-
-            if order.lower() == 'ascending': order = False
-            else: order = True
-
-            try:
-                data = sort_hotels(data, key, order)
+        try:
+            if request.lower() == "bookings":
+                display_bookings(bookings, False)
+            elif request.lower() == "bookings index":
+                display_bookings(bookings, True)
+            elif request.lower() == "hotels":
                 display_hotels(data)
-            except TypeError:
-                print('List cannot be sorted by that property.')
-        elif request.lower() == "remove booking":
-            remove_booking(data, bookings)
-        elif request.lower() == "create booking":
-            create_booking(data, bookings)
-        elif request.lower() == "search by location":
-            loc = input("Search for: ")
-            search_by_location(data, loc)
+            elif request.lower() == "sort":
+                key = input('Sort by property: ')
+                order = input('Ascending/descending: ')
 
-    except Exception as e:
-        print(f"Error: {e}")
+                if order.lower() == 'ascending': order = False
+                else: order = True
+
+                try:
+                    data = sort_hotels(data, key, order)
+                    display_hotels(data)
+                except TypeError:
+                    print('List cannot be sorted by that property.')
+            elif request.lower() == "remove booking":
+                remove_booking(data, bookings)
+            elif request.lower() == "create booking":
+                create_booking(data, bookings)
+            elif request.lower() == "search by location":
+                loc = input("Search for: ")
+                search_by_location(data, loc)
+
+        except Exception as e:
+            print(f"Error: {e}")
+
+#def test_sort_hotels():
+#   assert sort_hotels(get_data(), "rating", "descending") == "a"
