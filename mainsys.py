@@ -27,6 +27,8 @@ def get_bookings():
     return bookings_list
 
 def display_hotels(hotels_data):
+    """ Prints each item in a list and each list's keys and respective values.
+    The first key and value is printed in a 'rubrik-like' manner."""
     for h in hotels_data:
         keys = list(h.keys())
         hotel = list(h.values())
