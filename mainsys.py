@@ -61,22 +61,21 @@ def search_by_location(hotels_data, location):
 
     return hotels
 
-def remove_booking(hotels_data, bookings):
+def remove_booking(hotels_data, bookings_data):
     print("Choose a booking to be removed.")
-    display_bookings(bookings, True)
+    display_bookings(bookings_data, True)
     index_of_booking = int(input("Please provide the index of the booking to be removed: "))
-    hotel = bookings[index_of_booking]["hotel"]
+    hotel = bookings_data[index_of_booking]["hotel"]
     print(hotel)
-    rooms_of_booking = int(bookings[index_of_booking]["rooms booked"])
+    rooms_of_booking = int(bookings_data[index_of_booking]["rooms booked"])
     try:
         hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
     except IndexError:
-        return print('Hotel does not exist.')
-    print(hotel)
+        raise ValueError('Hotel does not exist.')
     hotels_data[hotels_data.index(hotel)]['rooms_available'] += rooms_of_booking
-    bookings.pop(index_of_booking)
+    bookings_data.pop(index_of_booking)
     with open("bookings.json", "w") as file:
-        json.dump(bookings, file, indent=4)
+        json.dump(bookings_data, file, indent=4)
     with open("hotels.json", "w") as file:
         json.dump(hotels_data, file, indent=4)
     print("Booking successfully removed.")
