@@ -25,7 +25,10 @@ def display_hotels(hotels_data):
 
 def sort_hotels(hotels_data, k, reverse):
     def a(e):
-        return e[k]
+        try:
+            return e[k]
+        except KeyError:
+            pass
 
     hotels_data.sort(reverse=reverse, key=a)
 
@@ -106,8 +109,11 @@ while True:
         if order.lower() == 'ascending': order = False
         else: order = True
 
-        data = sort_hotels(data, key, order)
-        display_hotels(data)
+        try:
+            data = sort_hotels(data, key, order)
+            display_hotels(data)
+        except TypeError:
+            print('List cannot be sorted by that property.')
     if request.lower() == "create booking":
         create_booking(data, bookings)
 
