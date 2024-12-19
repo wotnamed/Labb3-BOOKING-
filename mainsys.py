@@ -31,6 +31,19 @@ def sort_hotels(hotels_data, k, reverse):
 
     return hotels_data
 
+def search_by_location(hotels_data, location):
+    hotels = []
+
+    try:
+        hotels = list(filter(lambda hotels_data : hotels_data['location'].lower() == location.lower(), hotels_data))[0]
+    except IndexError:
+        return print('No hotel found.')
+
+    for hotel in hotels:
+        print(hotel)
+
+    return hotels
+
 def create_booking(hotels_data, bookings_data):
     user = input("Name: ")
     hotel = input("Hotel: ")
@@ -64,7 +77,7 @@ def create_booking(hotels_data, bookings_data):
     print(' ')
     confirmation = input('Confirm booking? (yes/no): ')
 
-    if confirmation.lower() == "no" or "n":
+    if confirmation.lower() == ("no" or "n"):
         return print('Cancelled booking.')
 
     bookings_data.append(new_booking)
@@ -80,6 +93,7 @@ def create_booking(hotels_data, bookings_data):
     print('Booking successfully created.')
 
 def display_bookings(bookings_data):
+    if len(bookings_data) == 0: return print('No bookings to display.')
     print("The following is the documented bookings, yes?")
     for bobject in bookings_data:
         keys = list(bobject.keys())
@@ -97,9 +111,9 @@ while True:
     request = input()
     if request.lower() == "bookings":
         display_bookings(bookings)
-    if request.lower() == "hotels":
+    elif request.lower() == "hotels":
         display_hotels(data)
-    if request.lower() == "sort":
+    elif request.lower() == "sort":
         key = input('Sort by property: ')
         order = input('Ascending/descending: ')
 
@@ -108,6 +122,8 @@ while True:
 
         data = sort_hotels(data, key, order)
         display_hotels(data)
-    if request.lower() == "create booking":
+    elif request.lower() == "create booking":
         create_booking(data, bookings)
-
+    elif request.lower() == "search by location":
+        loc = input("Search for: ")
+        search_by_location(data, loc)

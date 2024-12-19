@@ -1,23 +1,9 @@
 [
     {
-        "booking name": "Ture Sventon",
+        "booking name": "Lukas",
         "hotel": "The Overlook Hotel",
-        "nights booked": 0,
-        "rooms booked": 0,
-        "total cost": 0
-    },
-    {
-        "booking name": "Krurkas Brebiasson",
-        "hotel": "Kellerman's Mountain House",
         "nights booked": 7,
-        "rooms booked": 2,
-        "total cost": 2520
-    },
-    {
-        "booking name": "Yameho Huyoko",
-        "hotel": "The Overlook Hotel",
-        "nights booked": 365,
         "rooms booked": 1,
-        "total cost": 54750
+        "total cost": 1050
     }
 ]

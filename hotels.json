@@ -2,7 +2,7 @@
     {
         "name": "The Overlook Hotel",
         "location": "Colorado, USA",
-        "rooms_available": 99,
+        "rooms_available": 100,
         "cost_per_room": 150,
         "rating": 4.5
     },
@@ -37,8 +37,15 @@
     {
         "name": "Park Hyatt Tokyo",
         "location": "Tokyo, Japan",
-        "rooms_available": 177,
+        "rooms_available": 175,
         "cost_per_room": 350,
         "rating": 4.9
+    },
+    {
+        "name": "Hotel Sigma",
+        "location": "Columbus, Ohio, USA",
+        "rooms_available": 420,
+        "cost_per_room": 69,
+        "rating": 5.0
     }
 ]
