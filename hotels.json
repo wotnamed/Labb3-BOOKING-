@@ -30,7 +30,7 @@
     {
         "name": "Kellerman's Mountain House",
         "location": "Catskills, New York, USA",
-        "rooms_available": 98,
+        "rooms_available": 96,
         "cost_per_room": 180,
         "rating": 4.6
     },

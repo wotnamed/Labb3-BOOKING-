@@ -2,9 +2,11 @@ import json
 import os
 import pytest
 
-
-def clear():
-    os.system("cls||clear")
+#  running parameters
+clear_enabled = True
+def clear(status):
+    if status:
+        os.system("cls||clear")
 
 
 def get_data():
@@ -168,9 +170,9 @@ if __name__ == "__main__":
     while True:
         data = get_data()
         bookings = get_bookings()
-        request = input()
+        request = input(">> ")
 
-        clear()
+        clear(clear_enabled)
 
         try:
             if request.lower() == "bookings":
@@ -198,6 +200,11 @@ if __name__ == "__main__":
             elif request.lower() == "search by location":
                 loc = input("Search for: ")
                 search_by_location(data, loc)
+            elif request.lower() == "clear disable":
+                clear_enabled = False
+            elif request.lower() == "clear enable":
+                clear_enabled = True
+
 
         except Exception as e:
             print(f"Error: {e}")
