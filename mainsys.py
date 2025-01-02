@@ -2,8 +2,10 @@ import json
 import os
 import pytest
 
+
 def clear():
-    os.system("cls")
+    os.system("cls||clear")
+
 
 def get_data():
     try:
@@ -16,6 +18,7 @@ def get_data():
 
     return hotel_list
 
+
 def get_bookings():
     try:
         with open("bookings.json", "r") as file:
@@ -26,6 +29,7 @@ def get_bookings():
         raise ValueError("bookings.json is not a valid JSON file.")
 
     return bookings_list
+
 
 def display_hotels(hotels_data):
     """ Prints each item in a list and each list's keys and respective values.
@@ -40,6 +44,7 @@ def display_hotels(hotels_data):
             else:
                 print(f'    {keys[p]}: {hotel[p]}')
 
+
 def sort_hotels(hotels_data, k, reverse):
     def a(i):
         try:
@@ -50,6 +55,7 @@ def sort_hotels(hotels_data, k, reverse):
     hotels_data.sort(reverse=reverse, key=a)
 
     return hotels_data
+
 
 def search_by_location(hotels_data, location):
     hotels = []
@@ -64,12 +70,12 @@ def search_by_location(hotels_data, location):
 
     return hotels
 
+
 def remove_booking(hotels_data, bookings_data):
     print("Choose a booking to be removed.")
     display_bookings(bookings_data, True)
     index_of_booking = int(input("Please provide the index of the booking to be removed: "))
     hotel = bookings_data[index_of_booking]["hotel"]
-    print(hotel)
     rooms_of_booking = int(bookings_data[index_of_booking]["rooms booked"])
     try:
         hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
@@ -77,11 +83,9 @@ def remove_booking(hotels_data, bookings_data):
         raise ValueError('Hotel does not exist.')
     hotels_data[hotels_data.index(hotel)]['rooms_available'] += rooms_of_booking
     bookings_data.pop(index_of_booking)
-    with open("bookings.json", "w") as file:
-        json.dump(bookings_data, file, indent=4)
-    with open("hotels.json", "w") as file:
-        json.dump(hotels_data, file, indent=4)
+    save(bookings_data, hotels_data)
     print("Booking successfully removed.")
+
 
 def create_booking(hotels_data, bookings_data):
     user = input("Name: ")
@@ -125,10 +129,15 @@ def create_booking(hotels_data, bookings_data):
     bookings_data.append(new_booking)
     hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms
 
+    save(bookings_data, hotels_data)
+
+    print('Booking successfully created.')
+
+
+def save(bookings_data, hotels_data):
     try:
         with open("bookings.json", "w") as file:
             json.dump(bookings_data, file, indent=4)
-
         with open("hotels.json", "w") as file:
             json.dump(hotels_data, file, indent=4)
     except FileNotFoundError:
@@ -136,7 +145,6 @@ def create_booking(hotels_data, bookings_data):
     except json.JSONDecodeError:
         raise ValueError("File is not a valid JSON file.")
 
-    print('Booking successfully created.')
 
 def display_bookings(bookings_data, show_index):
     if not bookings_data:
@@ -154,6 +162,7 @@ def display_bookings(bookings_data, show_index):
                 print(f'    {keys[p]}: {bookie[p]}')
         if show_index:
             print(f'    index: {bookie_index}')
+
 
 if __name__ == "__main__":
     while True:
