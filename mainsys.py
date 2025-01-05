@@ -45,6 +45,7 @@ def display_hotels(hotels_data):
                 print(f'{hotel[p]}')
             else:
                 print(f'    {keys[p]}: {hotel[p]}')
+        print()
 
 
 def sort_hotels(hotels_data, k, reverse):
@@ -60,17 +61,24 @@ def sort_hotels(hotels_data, k, reverse):
 
 
 def search_by_location(hotels_data, location):
-    hotels = []
-
     try:
-        hotels = list(filter(lambda hotels_data : hotels_data['location'].lower() == location.lower(), hotels_data))[0]
+        hotels = list(filter(lambda hotels_data : hotels_data['location'].lower() == location.lower(), hotels_data))
+        for i in hotels:
+            keys = list(i.keys())
+            hotel = list(i.values())
+
+            for p in range(len(hotel)):
+                if p == 0:
+                    print(f'{hotel[p]}')
+                else:
+                    print(f'    {keys[p]}: {hotel[p]}')
+            print()
     except IndexError:
+        raise ValueError('No hotel found. (IndexError)') #  TODO: IDENTIFY IF INDEXERROR HANDLING IS NEEDED.
+    if not hotels:
         raise ValueError('No hotel found.')
 
-    for hotel in hotels:
-        print(hotel)
 
-    return hotels
 
 
 def remove_booking(hotels_data, bookings_data):
@@ -204,7 +212,6 @@ if __name__ == "__main__":
                 clear_enabled = False
             elif request.lower() == "clear enable":
                 clear_enabled = True
-
 
         except Exception as e:
             print(f"Error: {e}")

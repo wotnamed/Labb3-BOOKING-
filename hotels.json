@@ -30,7 +30,7 @@
     {
         "name": "Kellerman's Mountain House",
         "location": "Catskills, New York, USA",
-        "rooms_available": 96,
+        "rooms_available": 98,
         "cost_per_room": 180,
         "rating": 4.6
     },
@@ -47,5 +47,19 @@
         "rooms_available": 420,
         "cost_per_room": 69,
         "rating": 5.0
+    },
+    {
+        "name": "Franklin D Frank",
+        "location": "Gothenburg, Sweden",
+        "rooms_available": 64,
+        "cost_per_room": 105,
+        "rating": 4.5
+    },
+    {
+        "name": "Testing Besting",
+        "location": "Gothenburg, Sweden",
+        "rooms_available": 4,
+        "cost_per_room": 500,
+        "rating": 4.9
     }
 ]
