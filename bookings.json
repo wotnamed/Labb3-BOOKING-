@@ -1,1 +1,9 @@
-[]
+[
+    {
+        "booking name": "mamam",
+        "hotel": "Kellerman's Mountain House",
+        "nights booked": 9,
+        "rooms booked": 3,
+        "total cost": 4860
+    }
+]

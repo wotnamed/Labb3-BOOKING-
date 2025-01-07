@@ -3,7 +3,9 @@ import os
 import pytest
 
 #  running parameters
-clear_enabled = True
+clear_enabled = False
+
+
 def clear(status):
     if status:
         os.system("cls||clear")
@@ -34,8 +36,19 @@ def get_bookings():
 
 
 def display_hotels(hotels_data):
-    """ Prints each item in a list and each list's keys and respective values.
-    The first key and value is printed in a 'rubric-like' manner."""
+    """ Prints every hotel and its data.
+
+    The hotel name is printed in a rubric-like manner, as the data for each hotel is indented under the name.
+
+    Parameters
+    ----------
+    hotels_data : list, mandatory
+        The list of hotels, in which each hotel is a dictionary with key:value pairs.
+
+    Raises
+    ------
+    None
+    """
     for h in hotels_data:
         keys = list(h.keys())
         hotel = list(h.values())
@@ -79,9 +92,23 @@ def search_by_location(hotels_data, location):
         raise ValueError('No hotel found.')
 
 
-
-
 def remove_booking(hotels_data, bookings_data):
+    """Removes a booking specified by the user in bookings_data, by index of the booking in the list.
+
+    Also corrects for the recovered rooms in the hotels_data database.
+
+    Parameters
+    ----------
+    hotels_data : list of dicts, mandatory
+        The hotels database
+    bookings_data . list of dicts, mandatory
+        The bookings database
+
+    Raises
+    ------
+    ValueError
+        The hotel found in the booking is not present in the hotel database.
+    """
     print("Choose a booking to be removed.")
     display_bookings(bookings_data, True)
     index_of_booking = int(input("Please provide the index of the booking to be removed: "))
@@ -98,6 +125,29 @@ def remove_booking(hotels_data, bookings_data):
 
 
 def create_booking(hotels_data, bookings_data):
+    """Creates a booking in the bookings_data database.
+
+    Also adjusts the number of available rooms in the hotel_data database for the hotel booked by the user.
+
+    The details of the booking is provided via the user in the terminal.
+
+    Parameters
+    ----------
+    hotels_data : list of dicts, mandatory
+        The hotel database
+    bookings_data : list of dicts, mandatory
+        The bookings database
+
+    Raises
+    ------
+    ValueError
+        * If the user tries to book a number of rooms that exceeds the number of rooms available in the relevant hotel.
+        * If the user passes another datatype than int for amount of night or rooms.
+        * If the user specifies an int less than or equal to zero for nights or rooms.
+        * If the user wishes to book a hotel that doesn't exist.
+    Exception
+        If the user cancels the booking.
+    """
     user = input("Name: ")
     hotel = input("Hotel: ")
 
@@ -157,6 +207,21 @@ def save(bookings_data, hotels_data):
 
 
 def display_bookings(bookings_data, show_index):
+    """Prints the bookings provided in bookings_data to the terminal.
+    Also shows the index of each booking if show_index is True.
+
+    Parameters
+    ----------
+    bookings_data : list of dicts, mandatory
+        The bookings to be printed to the terminal.
+    show_index : boolean, mandatory
+        show_index determines if the index of each booking in the database is to be printed or not.
+
+    Raises
+    ------
+    ValueError
+        No data to be printed has been provided.
+    """
     if not bookings_data:
         raise ValueError("No bookings to display.")
 
@@ -200,7 +265,7 @@ if __name__ == "__main__":
                     data = sort_hotels(data, key, order)
                     display_hotels(data)
                 except TypeError:
-                    print('List cannot be sorted by that property.')
+                    raise TypeError("List cannot be sorted by that property.")
             elif request.lower() == "remove booking":
                 remove_booking(data, bookings)
             elif request.lower() == "create booking":
@@ -216,5 +281,36 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error: {e}")
 
+
+#  TESTING DATASETS: FOR TESTING ONLY:
+test_hotels_dataset = [
+    {
+        "name": "Graze The Roof",
+        "location": "Stockholm, Sweden",
+        "rooms_available": 23,
+        "cost_per_room": 399,
+        "rating": 4.5
+    },
+    {
+        "name": "Testing Besting",
+        "location": "Gothenburg, Sweden",
+        "rooms_available": 4,
+        "cost_per_room": 500,
+        "rating": 4.9
+    }
+]
+test_bookings_dataset = [
+    {
+        "booking name": "mamam",
+        "hotel": "Graze The Roof",
+        "nights booked": 9,
+        "rooms booked": 3,
+        "total cost": 10773
+    }
+]
 #def test_sort_hotels():
-#   assert sort_hotels(get_data(), "rating", "descending") == "a"
+ #  assert sort_hotels(get_data(), "rating", "descending") == "a"
+  # assert sort_hotels(get_data(), "oqwiejqwoi", "descending") ==
+#def test_display_hotels():
+    #assert display_hotels(test_hotels_dataset) ==
+
