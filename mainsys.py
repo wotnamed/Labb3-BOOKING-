@@ -382,9 +382,24 @@ test_bookings_dataset = [
         "total cost": 10773
     }
 ]
-#def test_sort_hotels():
- #  assert sort_hotels(get_data(), "rating", "descending") == "a"
-  # assert sort_hotels(get_data(), "oqwiejqwoi", "descending") ==
+def tes_sort_hotels():
+   assert sort_hotels(test_hotels_dataset, "rating", True) == [
+        {
+            "name": "Testing Besting",
+            "location": "Gothenburg, Sweden",
+            "rooms_available": 4,
+            "cost_per_room": 500,
+            "rating": 4.9
+        },
+        {
+            "name": "Graze The Roof",
+            "location": "Stockholm, Sweden",
+            "rooms_available": 23,
+            "cost_per_room": 399,
+            "rating": 4.5
+        }
+    ]
+   #assert sort_hotels(get_data(), "oqwiejqwoi", "descending") ==
 #def test_display_hotels():
     #assert display_hotels(test_hotels_dataset) ==
 
