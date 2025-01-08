@@ -18,7 +18,7 @@ def get_data():
             ----------
             None
 
-            Return
+            Returns
             ------
             hotel_list : list of dicts
                 The JSON data loaded into a list.
@@ -48,7 +48,7 @@ def get_bookings():
                 ----------
                 None
 
-                Return
+                Returns
                 ------
                 bookings_list : list of dicts
                     The JSON data loaded into a list.
@@ -109,7 +109,7 @@ def sort_hotels(hotels_data, k, reverse):
         reverse : boolean, mandatory
             Determines if the sorting order should be reversed, i.e. True if to be sorted in descending order.
 
-        Return
+        Returns
         ------
         hotels_data : list of dicts
             The sorted 'hotels' dataset.
