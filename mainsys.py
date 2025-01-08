@@ -239,12 +239,26 @@ def display_bookings(bookings_data, show_index):
             print(f'    index: {bookie_index}')
 
 
+def print_command_list():
+    print("These are the current commands available: \n")
+    print("    * 'bookings' - Prints all bookings listed in the bookings file.")
+    print("    * 'bookings index' - Prints all bookings listed in the bookings file, with the index of each booking in the file (useful for removing bookings).")
+    print("    * 'hotels' - Prints all hotels listed in the hotels file.")
+    print("    * 'sort' - Prints all hosted sorted by a certain property given by the user, ascending or descending in order.")
+    print("    * 'create booking' - Useful for creating a booking.")
+    print("    * 'remove booking' - Useful for removing a booking.")
+    print("    * 'search by location' - Prints each hotel available at a certain location.")
+    print("    * 'clear disable' - Disables command prompt clearing after each user input cycle.")
+    print("    * 'clear enable' - Enables command prompt clearing after each user input cycle.")
+    print("    * 'help' - Prints the command list.")
+
+
 if __name__ == "__main__":
+    print("BOOKING early build. Enter 'help' for help.")
     while True:
         data = get_data()
         bookings = get_bookings()
         request = input(">> ")
-
         clear(clear_enabled)
 
         try:
@@ -277,6 +291,8 @@ if __name__ == "__main__":
                 clear_enabled = False
             elif request.lower() == "clear enable":
                 clear_enabled = True
+            elif request.lower() == "help":
+                print_command_list()
 
         except Exception as e:
             print(f"Error: {e}")
