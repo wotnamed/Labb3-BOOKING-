@@ -12,6 +12,24 @@ def clear(status):
 
 
 def get_data():
+    """Loads the hotels data from 'hotels.json'.
+
+            Parameters
+            ----------
+            None
+
+            Return
+            ------
+            hotel_list : list of dicts
+                The JSON data loaded into a list.
+
+            Raises
+            ------
+            FileNotFoundError
+                If the JSON file was not found.
+            ValueError
+                If the file was not a valid JSON file.
+            """
     try:
         with open("hotels.json", "r") as file:
             hotel_list = json.load(file)
@@ -24,6 +42,24 @@ def get_data():
 
 
 def get_bookings():
+    """Loads the bookings data from 'bookings.json'.
+
+                Parameters
+                ----------
+                None
+
+                Return
+                ------
+                bookings_list : list of dicts
+                    The JSON data loaded into a list.
+
+                Raises
+                ------
+                FileNotFoundError
+                    If the JSON file was not found.
+                ValueError
+                    If the file was not a valid JSON file.
+                """
     try:
         with open("bookings.json", "r") as file:
             bookings_list = json.load(file)
@@ -62,6 +98,26 @@ def display_hotels(hotels_data):
 
 
 def sort_hotels(hotels_data, k, reverse):
+    """Sorts the 'hotels' dataset using the key and order inputted.
+
+        Parameters
+        ----------
+        hotels_data : list of dicts, mandatory
+            The hotels dataset to be used to sort
+        k : string, mandatory
+            Input for which key to sort with.
+        reverse : boolean, mandatory
+            Determines if the sorting order should be reversed, i.e. True if to be sorted in descending order.
+
+        Return
+        ------
+        hotels_data : list of dicts
+            The sorted 'hotels' dataset.
+
+        Raises
+        ------
+        None
+        """
     def a(i):
         try:
             return i[k]
@@ -114,10 +170,12 @@ def remove_booking(hotels_data, bookings_data):
     index_of_booking = int(input("Please provide the index of the booking to be removed: "))
     hotel = bookings_data[index_of_booking]["hotel"]
     rooms_of_booking = int(bookings_data[index_of_booking]["rooms booked"])
+
     try:
         hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
     except IndexError:
         raise ValueError('Hotel does not exist.')
+
     hotels_data[hotels_data.index(hotel)]['rooms_available'] += rooms_of_booking
     bookings_data.pop(index_of_booking)
     save(bookings_data, hotels_data)
