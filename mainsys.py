@@ -1,5 +1,7 @@
 import json
 import os
+from types import NoneType
+
 import pytest
 
 #  running parameters
@@ -11,16 +13,17 @@ def clear(status):
         os.system("cls||clear")
 
 
-def get_data():
+def get_data(file_name):
     """Loads the hotels data from 'hotels.json'.
 
             Parameters
             ----------
-            None
+            file_name : string
+                Name of the file to load data from.
 
             Returns
             ------
-            hotel_list : list of dicts
+            data_list : list of dicts
                 The JSON data loaded into a list.
 
             Raises
@@ -31,44 +34,14 @@ def get_data():
                 If the file was not a valid JSON file.
             """
     try:
-        with open("hotels.json", "r") as file:
-            hotel_list = json.load(file)
+        with open(file_name, "r") as file:
+            data_list = json.load(file)
     except FileNotFoundError:
-        raise FileNotFoundError("hotels.json not found.")
+        raise FileNotFoundError(f"{file_name} not found.")
     except json.JSONDecodeError:
-        raise ValueError("hotels.json is not a valid JSON file.")
+        raise ValueError(f"{file_name} is not a valid JSON file.")
 
-    return hotel_list
-
-
-def get_bookings():
-    """Loads the bookings data from 'bookings.json'.
-
-                Parameters
-                ----------
-                None
-
-                Returns
-                ------
-                bookings_list : list of dicts
-                    The JSON data loaded into a list.
-
-                Raises
-                ------
-                FileNotFoundError
-                    If the JSON file was not found.
-                ValueError
-                    If the file was not a valid JSON file.
-                """
-    try:
-        with open("bookings.json", "r") as file:
-            bookings_list = json.load(file)
-    except FileNotFoundError:
-        raise FileNotFoundError("bookings.json not found.")
-    except json.JSONDecodeError:
-        raise ValueError("bookings.json is not a valid JSON file.")
-
-    return bookings_list
+    return data_list
 
 
 def display_hotels(hotels_data):
@@ -118,34 +91,52 @@ def sort_hotels(hotels_data, k, reverse):
         ------
         None
         """
+
     def a(i):
         try:
             return i[k]
         except KeyError:
             pass
 
-    hotels_data.sort(reverse=reverse, key=a)
-
-    return hotels_data
+    try:
+        hotels_data.sort(reverse=reverse, key=a)
+        return hotels_data
+    except TypeError:
+        raise ValueError("List cannot be sorted by that property.")
 
 
 def search_by_location(hotels_data, location):
-    try:
-        hotels = list(filter(lambda hotels_data : hotels_data['location'].lower() == location.lower(), hotels_data))
-        for i in hotels:
-            keys = list(i.keys())
-            hotel = list(i.values())
+    """Searches through the dataset and prints hotels that match the location inputted.
 
-            for p in range(len(hotel)):
-                if p == 0:
-                    print(f'{hotel[p]}')
-                else:
-                    print(f'    {keys[p]}: {hotel[p]}')
-            print()
-    except IndexError:
-        raise ValueError('No hotel found. (IndexError)') #  TODO: IDENTIFY IF INDEXERROR HANDLING IS NEEDED.
+        Parameters
+        ----------
+        hotels_data : list of dicts, mandatory
+            The hotels dataset to be used to search through.
+        location : string
+            The location to search for.
+
+        Returns
+        ------
+        None
+
+        Raises
+        ------
+        ValueError
+            Is raised if no matching hotels were found in the given location.
+    """
+    hotels = [item for item in hotels_data if location.lower() in item['location'].lower()]
     if not hotels:
-        raise ValueError('No hotel found.')
+        raise ValueError('No hotels found in given location.')
+
+    for i in hotels:
+        keys = list(i.keys())
+        hotel = list(i.values())
+
+        for p in range(len(hotel)):
+            if p == 0:
+                print(f'{hotel[p]}')
+            else:
+                print(f'    {keys[p]}: {hotel[p]}')
 
 
 def remove_booking(hotels_data, bookings_data):
@@ -314,8 +305,8 @@ def print_command_list():
 if __name__ == "__main__":
     print("BOOKING early build. Enter 'help' for help.")
     while True:
-        data = get_data()
-        bookings = get_bookings()
+        data = get_data("hotels.json")
+        bookings = get_data("bookings.json")
         request = input(">> ")
         clear(clear_enabled)
 
@@ -333,11 +324,9 @@ if __name__ == "__main__":
                 if order.lower() == 'ascending': order = False
                 else: order = True
 
-                try:
-                    data = sort_hotels(data, key, order)
-                    display_hotels(data)
-                except TypeError:
-                    raise TypeError("List cannot be sorted by that property.")
+                data = sort_hotels(data, key, order)
+                display_hotels(data)
+
             elif request.lower() == "remove booking":
                 remove_booking(data, bookings)
             elif request.lower() == "create booking":
@@ -382,7 +371,7 @@ test_bookings_dataset = [
         "total cost": 10773
     }
 ]
-def test_sort_hotels():
+def tes_sort_hotels():
    assert sort_hotels(test_hotels_dataset, "rating", True) == [
         {
             "name": "Testing Besting",
@@ -399,8 +388,6 @@ def test_sort_hotels():
             "rating": 4.5
         }
     ]
-   #with pytest.raises(ValueError):
-   #    sort_hotels("sawdusting", True)
-#def test_display_hotels():
-    #assert display_hotels(test_hotels_dataset) ==
+   with pytest.raises(ValueError):
+       sort_hotels(test_hotels_dataset, "saiodjauwdi", True)
 
