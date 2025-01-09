@@ -1,6 +1,7 @@
 import json
 import os
 import pytest
+from pynput.keyboard import Key, Controller
 
 #  running parameters
 clear_enabled = False
@@ -399,6 +400,39 @@ def test_sort_hotels():
             "rating": 4.5
         }
     ]
+def test_create_booking():
+    def save(a,b):
+        pass
+    create_booking(test_hotels_dataset, test_bookings_dataset)
+    Controller().type('Causality')
+    Controller().press('enter')
+    Controller().type('Graze The Roof')
+    Controller().press('enter')
+    Controller().type('2')
+    Controller().press('enter')
+    Controller().type('3')
+    Controller().press('enter')
+    Controller().type('y')
+    Controller().press('enter')
+    assert test_bookings_dataset == [
+        {
+            "booking name": "mamam",
+            "hotel": "Graze The Roof",
+            "nights booked": 9,
+            "rooms booked": 3,
+            "total cost": 10773
+        },
+        {
+            "booking name": "Causality",
+            "hotel": "Graze The Roof",
+            "nights booked": 2,
+            "rooms booked": 3,
+            "total cost": 2394
+
+        }
+    ]
+
+
    #with pytest.raises(ValueError):
    #    sort_hotels("sawdusting", True)
 #def test_display_hotels():
