@@ -391,10 +391,7 @@ def tes_sort_hotels():
         }
     ]
 def test_create_booking():
-    def save(a,b):
-        pass
     create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'y')
-
     assert test_bookings_dataset == [
         {
             "booking name": "mamam",
