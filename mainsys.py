@@ -1,8 +1,7 @@
 import json
 import os
-from types import NoneType
-
 import pytest
+from pynput.keyboard import Key, Controller
 
 #  running parameters
 clear_enabled = False
@@ -173,7 +172,7 @@ def remove_booking(hotels_data, bookings_data):
     print("Booking successfully removed.")
 
 
-def create_booking(hotels_data, bookings_data):
+def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, rooms, confirmation):
     """Creates a booking in the bookings_data database.
 
     Also adjusts the number of available rooms in the hotel_data database for the hotel booked by the user.
@@ -197,12 +196,9 @@ def create_booking(hotels_data, bookings_data):
     Exception
         If the user cancels the booking.
     """
-    user = input("Name: ")
-    hotel = input("Hotel: ")
-
     try:
-        nights = int(input("Amount of nights: "))
-        rooms = int(input("Amount of rooms: "))
+        nights = int(nights)
+        rooms = int(rooms)
     except ValueError:
         raise ValueError("Nights and rooms must be integers.")
 
@@ -231,15 +227,18 @@ def create_booking(hotels_data, bookings_data):
     for e in new_booking:
         print(f'{e.capitalize()}: {new_booking[e]}')
     print(' ')
-    confirmation = input('Confirm booking? (yes/no): ')
-    if confirmation.lower() == ("no" or "n"):
+    if confirmation.lower() == "n":
         raise Exception('Booking cancelled by user.')
-
+    elif confirmation.lower() == "no":
+        raise Exception('Booking cancelled by user.')
+    else:
+        pass
     bookings_data.append(new_booking)
     hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms
-
-    save(bookings_data, hotels_data)
-
+    if f_save:
+        save(bookings_data, hotels_data)
+    else:
+        pass
     print('Booking successfully created.')
 
 
@@ -330,7 +329,7 @@ if __name__ == "__main__":
             elif request.lower() == "remove booking":
                 remove_booking(data, bookings)
             elif request.lower() == "create booking":
-                create_booking(data, bookings)
+                create_booking(data, bookings, True, user = input("Name: "), hotel = input("Hotel: "), nights = input("Amount of nights: "), rooms = input("Number of rooms: "), confirmation = input('Confirm booking? (yes/no): '))
             elif request.lower() == "search by location":
                 loc = input("Search for: ")
                 search_by_location(data, loc)
@@ -391,3 +390,31 @@ def tes_sort_hotels():
    with pytest.raises(ValueError):
        sort_hotels(test_hotels_dataset, "saiodjauwdi", True)
 
+def test_create_booking():
+    create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, "y")
+    assert test_bookings_dataset == [
+        {
+            "booking name": "mamam",
+            "hotel": "Graze The Roof",
+            "nights booked": 9,
+            "rooms booked": 3,
+            "total cost": 10773
+        },
+        {
+            "booking name": "Causality",
+            "hotel": "Graze The Roof",
+            "nights booked": 2,
+            "rooms booked": 3,
+            "total cost": 2394
+        }
+    ]
+    with pytest.raises(ValueError):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'ffffgggg', '0', 2, 3, 'y')
+    with pytest.raises(ValueError):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'skrrrrkrkr', 'Graze The Roof', -1, 3, 'y')
+    with pytest.raises(ValueError):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 9999, 'y')
+    with pytest.raises(Exception):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'n')
+    with pytest.raises(Exception):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'no')
