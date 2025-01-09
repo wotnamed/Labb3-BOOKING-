@@ -1,7 +1,6 @@
 import json
 import os
-import pytest
-from pynput.keyboard import Key, Controller
+
 
 #  running parameters
 clear_enabled = False
@@ -13,11 +12,11 @@ def clear(status):
 
 
 def get_data(file_name):
-    """Loads the hotels data from 'hotels.json'.
+    """Loads the data from the file given in 'file_name'.
 
             Parameters
             ----------
-            file_name : string
+            file_name : string, mandatory
                 Name of the file to load data from.
 
             Returns
@@ -88,7 +87,8 @@ def sort_hotels(hotels_data, k, reverse):
 
         Raises
         ------
-        None
+        ValueError
+            Raised if the key for which the dataset should be sorted with could not be found.
         """
 
     def a(i):
@@ -147,7 +147,7 @@ def remove_booking(hotels_data, bookings_data):
     ----------
     hotels_data : list of dicts, mandatory
         The hotels database
-    bookings_data . list of dicts, mandatory
+    bookings_data : list of dicts, mandatory
         The bookings database
 
     Raises
@@ -177,7 +177,8 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
 
     Also adjusts the number of available rooms in the hotel_data database for the hotel booked by the user.
 
-    The details of the booking is provided via the user in the terminal.
+    The Legacy version of this function made the details of the booking be provided via the user in the terminal.
+    This is no longer the case due to testing issues.
 
     Parameters
     ----------
@@ -185,7 +186,18 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
         The hotel database
     bookings_data : list of dicts, mandatory
         The bookings database
-
+    f_save : boolean, mandatory
+        Specifies if the function calls the save() function or not. Set to False when testing, but True otherwise.
+    user : str, mandatory
+        "booking name" in the bookings file.
+    hotel : str, mandatory
+        The hotel to be booked. A basic search function has been implemented to account for search errors.
+    nights : int, mandatory
+        The number of nights desired to be booked
+    rooms : int, mandatory
+        The number of rooms desired to be booked.
+    confirmation: str, mandatory
+        User confirmation for the booking (Somewhat useless in the current implementation as the user can't see the total currency charged for the booking prior to booking...).
     Raises
     ------
     ValueError
