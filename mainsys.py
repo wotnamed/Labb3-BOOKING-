@@ -183,7 +183,7 @@ def remove_booking(hotels_data, bookings_data):
     print("Booking successfully removed.")
 
 
-def create_booking(hotels_data, bookings_data, save, user, hotel, nights, rooms, confirmation):
+def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, rooms, confirmation):
     """Creates a booking in the bookings_data database.
 
     Also adjusts the number of available rooms in the hotel_data database for the hotel booked by the user.
@@ -232,11 +232,17 @@ def create_booking(hotels_data, bookings_data, save, user, hotel, nights, rooms,
     for e in new_booking:
         print(f'{e.capitalize()}: {new_booking[e]}')
     print(' ')
-    if confirmation.lower() == ("no" or "n"):
+    if confirmation.lower() == "n":
         raise Exception('Booking cancelled by user.')
+    elif confirmation.lower() == "no":
+        raise Exception('Booking cancelled by user.')
+    else:
+        pass
+    print("sigma")
     bookings_data.append(new_booking)
+    print("hotel")
     hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms
-    if save:
+    if f_save:
         save(bookings_data, hotels_data)
     else:
         pass
@@ -391,7 +397,7 @@ def tes_sort_hotels():
         }
     ]
 def test_create_booking():
-    create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'y')
+    create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, "y")
     assert test_bookings_dataset == [
         {
             "booking name": "mamam",
@@ -406,10 +412,18 @@ def test_create_booking():
             "nights booked": 2,
             "rooms booked": 3,
             "total cost": 2394
-
         }
     ]
-
+    with pytest.raises(ValueError):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'ffffgggg', '0', 2, 3, 'y')
+    with pytest.raises(ValueError):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'skrrrrkrkr', 'Graze The Roof', -1, 3, 'y')
+    with pytest.raises(ValueError):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 9999, 'y')
+    with pytest.raises(Exception):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'n')
+    with pytest.raises(Exception):
+        create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'no')
 
    #with pytest.raises(ValueError):
    #    sort_hotels("sawdusting", True)
