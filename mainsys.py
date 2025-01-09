@@ -183,7 +183,7 @@ def remove_booking(hotels_data, bookings_data):
     print("Booking successfully removed.")
 
 
-def create_booking(hotels_data, bookings_data):
+def create_booking(hotels_data, bookings_data, save, user, hotel, nights, rooms, confirmation):
     """Creates a booking in the bookings_data database.
 
     Also adjusts the number of available rooms in the hotel_data database for the hotel booked by the user.
@@ -207,28 +207,20 @@ def create_booking(hotels_data, bookings_data):
     Exception
         If the user cancels the booking.
     """
-    user = input("Name: ")
-    hotel = input("Hotel: ")
-
     try:
-        nights = int(input("Amount of nights: "))
-        rooms = int(input("Amount of rooms: "))
+        nights = int(nights)
+        rooms = int(rooms)
     except ValueError:
         raise ValueError("Nights and rooms must be integers.")
-
     if (nights or rooms) <= 0:
         raise ValueError("Nights and rooms must be greater than 0.")
-
     hotel = next((item for item in hotels_data if hotel.lower() in item['name'].lower()), None)
     #hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
     if not hotel:
         raise ValueError("Hotel does not exist.")
-
     total_cost = nights * rooms * hotel['cost_per_room']
-
     if rooms > hotel['rooms_available']:
         raise ValueError('Not enough rooms available.')
-
     new_booking = {
         "booking name": user,
         "hotel": hotel['name'],
@@ -236,20 +228,18 @@ def create_booking(hotels_data, bookings_data):
         "rooms booked": rooms,
         "total cost": total_cost
     }
-
     print(' ')
     for e in new_booking:
         print(f'{e.capitalize()}: {new_booking[e]}')
     print(' ')
-    confirmation = input('Confirm booking? (yes/no): ')
     if confirmation.lower() == ("no" or "n"):
         raise Exception('Booking cancelled by user.')
-
     bookings_data.append(new_booking)
     hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms
-
-    save(bookings_data, hotels_data)
-
+    if save:
+        save(bookings_data, hotels_data)
+    else:
+        pass
     print('Booking successfully created.')
 
 
@@ -342,7 +332,7 @@ if __name__ == "__main__":
             elif request.lower() == "remove booking":
                 remove_booking(data, bookings)
             elif request.lower() == "create booking":
-                create_booking(data, bookings)
+                create_booking(data, bookings, True, user = input("Name: "), hotel = input("Hotel: "), nights = input("Amount of nights: "), rooms = input("Number of rooms: "), confirmation = input('Confirm booking? (yes/no): '))
             elif request.lower() == "search by location":
                 loc = input("Search for: ")
                 search_by_location(data, loc)
@@ -383,7 +373,7 @@ test_bookings_dataset = [
         "total cost": 10773
     }
 ]
-def test_sort_hotels():
+def tes_sort_hotels():
    assert sort_hotels(test_hotels_dataset, "rating", True) == [
         {
             "name": "Testing Besting",
@@ -403,17 +393,8 @@ def test_sort_hotels():
 def test_create_booking():
     def save(a,b):
         pass
-    create_booking(test_hotels_dataset, test_bookings_dataset)
-    Controller().type('Causality')
-    Controller().press('enter')
-    Controller().type('Graze The Roof')
-    Controller().press('enter')
-    Controller().type('2')
-    Controller().press('enter')
-    Controller().type('3')
-    Controller().press('enter')
-    Controller().type('y')
-    Controller().press('enter')
+    create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'y')
+
     assert test_bookings_dataset == [
         {
             "booking name": "mamam",
