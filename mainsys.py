@@ -218,9 +218,9 @@ def create_booking(hotels_data, bookings_data):
     if (nights or rooms) <= 0:
         raise ValueError("Nights and rooms must be greater than 0.")
 
-    try:
-        hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
-    except IndexError:
+    hotel = next((item for item in hotels_data if hotel.lower() in item['name'].lower()), None)
+    #hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
+    if not hotel:
         raise ValueError("Hotel does not exist.")
 
     total_cost = nights * rooms * hotel['cost_per_room']
@@ -382,7 +382,7 @@ test_bookings_dataset = [
         "total cost": 10773
     }
 ]
-def tes_sort_hotels():
+def test_sort_hotels():
    assert sort_hotels(test_hotels_dataset, "rating", True) == [
         {
             "name": "Testing Besting",
@@ -399,7 +399,8 @@ def tes_sort_hotels():
             "rating": 4.5
         }
     ]
-   #assert sort_hotels(get_data(), "oqwiejqwoi", "descending") ==
+   #with pytest.raises(ValueError):
+   #    sort_hotels("sawdusting", True)
 #def test_display_hotels():
     #assert display_hotels(test_hotels_dataset) ==
 
