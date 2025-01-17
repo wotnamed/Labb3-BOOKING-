@@ -80,5 +80,6 @@ def test_create_booking():
     with pytest.raises(Exception):
         create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'no')
 
-
-
+display_hotels(test_hotels_dataset)
+def test_display_hotels():
+   pass
