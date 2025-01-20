@@ -3,7 +3,7 @@ import json
 import os
 import pytest
 from mainsys import *
-
+from unittest.mock import patch
 
 #  TESTING DATASETS: FOR TESTING ONLY:
 test_hotels_dataset = [
@@ -80,6 +80,28 @@ def test_create_booking():
     with pytest.raises(Exception):
         create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, 'no')
 
-display_hotels(test_hotels_dataset)
-def test_display_hotels():
-   pass
+def test_display_hotels(capsys):
+    display_hotels(test_hotels_dataset)
+
+    captured = capsys.readouterr()
+
+    assert captured.out == "Testing Besting\n    location: Gothenburg, Sweden\n    rooms_available: 4\n    cost_per_room: 500\n    rating: 4.9\n\nGraze The Roof\n    location: Stockholm, Sweden\n    rooms_available: 20\n    cost_per_room: 399\n    rating: 4.5\n\n"
+
+    with pytest.raises(ValueError):
+        display_hotels('')
+    with pytest.raises(ValueError):
+        display_hotels([])
+    with pytest.raises(ValueError):
+        display_hotels([{"aisdjw"}])
+
+def test_search_by_location(capsys):
+    hotels_data = get_data('hotels.json')
+
+    search_by_location(hotels_data, 'Columbus')
+
+    captured = capsys.readouterr()
+
+    assert captured.out == "Hotel Sigma\n    location: Columbus, Ohio, USA\n    rooms_available: 420\n    cost_per_room: 69\n    rating: 5.0\n"
+
+    with pytest.raises(ValueError):
+        search_by_location(hotels_data, 'asiudghwi')

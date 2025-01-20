@@ -1,6 +1,6 @@
 import json
 import os
-
+from multiprocessing.managers import Value
 
 #  running parameters
 clear_enabled = False
@@ -54,18 +54,34 @@ def display_hotels(hotels_data):
 
     Raises
     ------
-    None
+    ValueError
+        Invalid hotels dataset was provided, i.e. it is not a list of dictionaries.
+    ValueError
+        The list provided includes no data, i.e. the length of the list provided is equal to 0.
+    ValueError
+        Any other unexpected errors that are raised during the printing process. Could be for example that the dictionaries includes only keys and no values.
     """
-    for h in hotels_data:
-        keys = list(h.keys())
-        hotel = list(h.values())
 
-        for p in range(len(hotel)):
-            if p == 0:
-                print(f'{hotel[p]}')
-            else:
-                print(f'    {keys[p]}: {hotel[p]}')
-        print()
+    if not isinstance(hotels_data, list) and not all(isinstance(i, dict) for i in hotels_data):
+        raise ValueError('An error occurred in the loading of hotels data. Invalid hotels data provided.')
+
+    if len(hotels_data) == 0:
+        raise ValueError('An error occurred in the loading of hotels data. The list provided includes no data.')
+
+    try:
+        for h in hotels_data:
+
+            keys = list(h.keys())
+            hotel = list(h.values())
+
+            for p in range(len(hotel)):
+                if p == 0:
+                    print(f'{hotel[p]}')
+                else:
+                    print(f'    {keys[p]}: {hotel[p]}')
+            print()
+    except AttributeError:
+        raise ValueError('An unexpected error occurred while printing the hotels data.')
 
 
 def sort_hotels(hotels_data, k, reverse):
@@ -198,6 +214,7 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
         The number of rooms desired to be booked.
     confirmation: str, mandatory
         User confirmation for the booking (Somewhat useless in the current implementation as the user can't see the total currency charged for the booking prior to booking...).
+
     Raises
     ------
     ValueError
@@ -318,41 +335,41 @@ if __name__ == "__main__":
     while True:
         data = get_data("hotels.json")
         bookings = get_data("bookings.json")
-        request = input(">> ")
+        request = input(">> ").lower()
         clear(clear_enabled)
 
         try:
-            if request.lower() == "bookings":
-                display_bookings(bookings, False)
-            elif request.lower() == "bookings index":
-                display_bookings(bookings, True)
-            elif request.lower() == "hotels":
-                display_hotels(data)
-            elif request.lower() == "sort":
-                key = input('Sort by property: ')
-                order = input('Ascending/descending: ')
+            match request:
+                case "bookings":
+                    display_bookings(bookings, False)
+                case "bookings index":
+                    display_bookings(bookings, True)
+                case "hotels":
+                    display_hotels(data)
+                case "sort":
+                    key = input('Sort by property: ')
+                    order = input('Ascending/descending: ')
 
-                if order.lower() == 'ascending': order = False
-                else: order = True
+                    if order.lower() == 'ascending': order = False
+                    else: order = True
 
-                data = sort_hotels(data, key, order)
-                display_hotels(data)
-
-            elif request.lower() == "remove booking":
-                remove_booking(data, bookings)
-            elif request.lower() == "create booking":
-                create_booking(data, bookings, True, user = input("Name: "), hotel = input("Hotel: "), nights = input("Amount of nights: "), rooms = input("Number of rooms: "), confirmation = input('Confirm booking? (yes/no): '))
-            elif request.lower() == "search by location":
-                loc = input("Search for: ")
-                search_by_location(data, loc)
-            elif request.lower() == "clear disable":
-                clear_enabled = False
-            elif request.lower() == "clear enable":
-                clear_enabled = True
-            elif request.lower() == "help":
-                print_command_list()
+                    data = sort_hotels(data, key, order)
+                    display_hotels(data)
+                case "remove booking":
+                    remove_booking(data, bookings)
+                case "create booking":
+                    create_booking(data, bookings, True, user=input("Name: "), hotel=input("Hotel: "),
+                           nights=input("Amount of nights: "), rooms=input("Number of rooms: "),
+                           confirmation=input('Confirm booking? (yes/no): '))
+                case "search by location":
+                    loc = input("Search for: ")
+                    search_by_location(data, loc)
+                case "clear disable":
+                    clear_enabled = False
+                case "clear enable":
+                    clear_enabled = True
+                case "help":
+                    print_command_list()
 
         except Exception as e:
             print(f"Error: {e}")
-
-
