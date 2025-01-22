@@ -2,12 +2,12 @@ import json
 import os
 
 #  running parameters
-clear_enabled = False
+clear_enabled = False  # Determines if the clear() function is ran upon each user input cycle. Can be changed by user.
 
 
-def clear(status):
+def clear(status):  # Prompts the command line interface to clear the terminal. Does not work in an IDE.
     if status:
-        os.system("cls||clear")
+        os.system("cls||clear")  # 'cls' is used by Windows and 'clear' by Linux. (Linux hasn't been tested though.)
 
 
 def get_data(file_name):
@@ -31,7 +31,7 @@ def get_data(file_name):
                 If the file was not a valid JSON file.
             """
     try:
-        with open(file_name, "r") as file:
+        with open(file_name, "r") as file:  # 'r' ensures we don't overwrite the file. 'r' for read, 'w' for write.
             data_list = json.load(file)
     except FileNotFoundError:
         raise FileNotFoundError(f"{file_name} not found.")
@@ -40,14 +40,14 @@ def get_data(file_name):
 
     return data_list
 
-def is_invalid_data(dataset):
+def is_invalid_data(dataset):  # Checks for incompatibility or corruption.
     if not isinstance(dataset, list) and not all(isinstance(i, dict) for i in dataset):
+        return True  # The line above checks if the dataset isn't a list and if every item in the list isn't a dict.
+
+    elif len(dataset) == 0:  # If the dataset has a length of zero, it doesn't contain any information.
         return True
 
-    elif len(dataset) == 0:
-        return True
-
-    else: return False
+    else: return False  # return False means that this function didn't flag the dataset as being "invalid".
 
 def display_hotels(hotels_data):
     """ Prints every hotel and its data.
@@ -71,17 +71,17 @@ def display_hotels(hotels_data):
         raise ValueError('An error occurred in the loading of hotels data. Invalid hotels data provided.')
 
     try:
-        for h in hotels_data:
+        for h in hotels_data:  # For every hotel
 
-            keys = list(h.keys())
-            hotel = list(h.values())
+            keys = list(h.keys())  # Find key
+            hotel = list(h.values())  # Find value
 
             for p in range(len(hotel)):
-                if p == 0:
-                    print(f'{hotel[p]}')
+                if p == 0:  # The first key:value pair in each hotel is the name. The key isn't printed here ('name').
+                    print(f'{hotel[p]}')  # We don't indent the name to make it appear as a rubric.
                 else:
-                    print(f'    {keys[p]}: {hotel[p]}')
-            print()
+                    print(f'    {keys[p]}: {hotel[p]}')  # All other key:value pairs are indented under the hotel name.
+            print()  # New line to separate hotels from each other. Improves readability.
     except AttributeError:
         raise ValueError('An unexpected error occurred while printing the hotels data.')
 
@@ -109,14 +109,14 @@ def sort_hotels(hotels_data, k, reverse):
             Raised if the key for which the dataset should be sorted with could not be found.
         """
 
-    def a(i):
+    def a(i):  # Extract key to be sorted
         try:
             return i[k]
-        except KeyError:
+        except KeyError:  # Catch error to prevent program crash.
             pass
 
     try:
-        hotels_data.sort(reverse=reverse, key=a)
+        hotels_data.sort(reverse=reverse, key=a)  # Docs: https://docs.python.org/3.8/library/stdtypes.html#list.sort
         return hotels_data
     except TypeError:
         raise ValueError("List cannot be sorted by that property.")
@@ -141,8 +141,8 @@ def search_by_location(hotels_data, location):
         ValueError
             Is raised if no matching hotels were found in the given location.
     """
-    hotels = [item for item in hotels_data if location.lower() in item['location'].lower()]
-    if not hotels:
+    hotels = [item for item in hotels_data if location.lower() in item['location'].lower()]  # Find hotels by location
+    if not hotels:  # If no hotel were to be found (hotels list is empty or is False)
         raise ValueError('No hotels found in given location.')
 
     display_hotels(hotels)
@@ -168,20 +168,20 @@ def remove_booking(hotels_data, bookings_data):
     print("Choose a booking to be removed.")
     display_bookings(bookings_data, True)
     index_of_booking = int(input("Please provide the index of the booking to be removed: "))
-    hotel = bookings_data[index_of_booking]["hotel"]
-    rooms_of_booking = int(bookings_data[index_of_booking]["rooms booked"])
+    hotel = bookings_data[index_of_booking]["hotel"]  # Find the hotel booked in the booking.
+    rooms_of_booking = int(bookings_data[index_of_booking]["rooms booked"])  # Find the number of rooms booked.
 
-    try:
+    try:  # Find hotel by name using lambda. (Assure hotel exists)
         hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
     except IndexError:
         raise ValueError('Hotel does not exist.')
 
-    hotels_data[hotels_data.index(hotel)]['rooms_available'] += rooms_of_booking
-    bookings_data.pop(index_of_booking)
+    hotels_data[hotels_data.index(hotel)]['rooms_available'] += rooms_of_booking  # Return unbooked rooms to hotel.
+    bookings_data.pop(index_of_booking)  # Remove the booking from bookings_data.
     save(bookings_data, hotels_data)
     print("Booking successfully removed.")
 
-def create_booking_dict(user, hotel, nights, rooms, total_cost):
+def create_booking_dict(user, hotel, nights, rooms, total_cost):  # Used to be found within create_booking().
     new_booking = {
         "booking name": user,
         "hotel": hotel,
@@ -230,25 +230,25 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
         If the user cancels the booking.
     """
     try:
-        nights = int(nights)
-        rooms = int(rooms)
-    except ValueError:
+        nights = int(nights)  # Convert str to int. Int is required for calculations later.
+        rooms = int(rooms)  # While float does work for calculations, it doesn't make sense to book a fraction of a room
+    except ValueError:  # Catch error if datatype conversion doesn't work.
         raise ValueError("Nights and rooms must be integers.")
 
-    if (nights or rooms) <= 0:
+    if (nights or rooms) <= 0:  # A booking shouldn't be 'negative'. Otherwise, the user could earn money from booking.
         raise ValueError("Nights and rooms must be greater than 0.")
 
-    hotel = next((item for item in hotels_data if hotel.lower() in item['name'].lower()), None)
+    hotel = next((item for item in hotels_data if hotel.lower() in item['name'].lower()), None)  # Find the hotel.
 
     if not hotel:
         raise ValueError("Hotel does not exist.")
 
-    total_cost = nights * rooms * hotel['cost_per_room']
+    total_cost = nights * rooms * hotel['cost_per_room']  # Cost calculation
 
     if rooms > hotel['rooms_available']:
         raise ValueError('Not enough rooms available.')
 
-    new_booking = create_booking_dict(user, hotel['name'], nights, rooms, total_cost)
+    new_booking = create_booking_dict(user, hotel['name'], nights, rooms, total_cost)  # Create the booking dict.
 
     print(' ')
     for e in new_booking:
@@ -257,12 +257,12 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
     if confirmation.lower() == "n":
         raise Exception('Booking cancelled by user.')
     elif confirmation.lower() == "no":
-        raise Exception('Booking cancelled by user.')
+        raise Exception('Booking cancelled by user.')  # Cancels the booking process.
 
-    bookings_data.append(new_booking)
-    hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms
+    bookings_data.append(new_booking)  # Append the booking to the booking list.
+    hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms  # Mark the number of rooms booked as unavailable.
 
-    if f_save:
+    if f_save:  # Some hypothetical testing environments would not want the function to save the data.
         save(bookings_data, hotels_data)
 
     print('Booking successfully created.')
@@ -270,10 +270,10 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
 
 def save(bookings_data, hotels_data):
     try:
-        with open("bookings.json", "w") as file:
-            json.dump(bookings_data, file, indent=4)
+        with open("bookings.json", "w") as file:  # 'w' clears the file from data.
+            json.dump(bookings_data, file, indent=4)  # json.dump writes to the file with desired data.
         with open("hotels.json", "w") as file:
-            json.dump(hotels_data, file, indent=4)
+            json.dump(hotels_data, file, indent=4)  # Standard indentation is four spaces.
     except FileNotFoundError:
         raise FileNotFoundError("JSON file not found.")
     except json.JSONDecodeError:
@@ -296,20 +296,20 @@ def display_bookings(bookings_data, show_index):
     ValueError
         Bookings data provided is invalid.
     """
-    if is_invalid_data(bookings_data):
+    if is_invalid_data(bookings_data):  # Check for incompatibility.
         raise ValueError('An error occurred in the loading of bookings data. Invalid bookings data provided.')
 
-    for bobject in bookings_data:
-        keys = list(bobject.keys())
-        bookie = list(bobject.values())
-        bookie_index = bookings_data.index(bobject)
+    for item in bookings_data:  # For every booking.
+        keys = list(item.keys())
+        bookie = list(item.values())
+        bookie_index = bookings_data.index(item)  # Index is grabbed here for possible use if show_index == True.
 
         for p in range(len(bookie)):
             if p == 0:
                 print(f'{bookie[p]}')
             else:
                 print(f'    {keys[p]}: {bookie[p]}')
-        if show_index:
+        if show_index:  # show_index is needed when removing a booking.
             print(f'    index: {bookie_index}')
 
 
@@ -330,13 +330,13 @@ def print_command_list():
 if __name__ == "__main__":
     print("BOOKING early build. Enter 'help' for help.")
     while True:
-        data = get_data("hotels.json")
-        bookings = get_data("bookings.json")
-        request = input(">> ").lower()
-        clear(clear_enabled)
+        data = get_data("hotels.json")  # Get the hotel dataset
+        bookings = get_data("bookings.json")  # Get the booking dataset
+        request = input(">> ").lower()  # Grab user input. .lower() insures we ignore capitalisation.
+        clear(clear_enabled)  # Clear terminal if clear_enabled == True.
 
         try:
-            match request:
+            match request:  # Every program response to user input is here.
                 case "bookings":
                     display_bookings(bookings, False)
                 case "bookings index":
