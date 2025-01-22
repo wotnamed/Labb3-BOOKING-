@@ -51,6 +51,19 @@ def test_sort_hotels():
    with pytest.raises(ValueError):
        sort_hotels(test_hotels_dataset, "saiodjauwdi", True)
 
+def test_display_bookings(capsys):
+    display_bookings(test_bookings_dataset, True)
+
+    captured = capsys.readouterr()
+
+    assert captured.out == "mamam\n    hotel: Graze The Roof\n    nights booked: 9\n    rooms booked: 3\n    total cost: 10773\n    index: 0\n"
+    display_bookings(test_bookings_dataset, False)
+    captured = capsys.readouterr()
+    assert captured.out == "mamam\n    hotel: Graze The Roof\n    nights booked: 9\n    rooms booked: 3\n    total cost: 10773\n"
+    with pytest.raises(ValueError):
+        display_bookings([], False)
+    with pytest.raises(ValueError):
+        display_bookings("sfjofija", True)
 def test_create_booking():
     create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, "y")
     assert test_bookings_dataset == [
@@ -93,6 +106,7 @@ def test_display_hotels(capsys):
         display_hotels([])
     with pytest.raises(ValueError):
         display_hotels([{"aisdjw"}])
+
 
 def test_search_by_location(capsys):
     hotels_data = get_data('hotels.json')

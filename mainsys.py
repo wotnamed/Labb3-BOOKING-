@@ -301,6 +301,8 @@ def display_bookings(bookings_data, show_index):
     """
     if not bookings_data:
         raise ValueError("No bookings to display.")
+    if not isinstance(bookings_data, list) and not all(isinstance(i, dict) for i in bookings_data):
+        raise ValueError('An error occurred in the loading of hotels data. Invalid hotels data provided.')
 
     for bobject in bookings_data:
         keys = list(bobject.keys())
@@ -347,6 +349,7 @@ if __name__ == "__main__":
                 case "hotels":
                     display_hotels(data)
                 case "sort":
+                    print("Properties available to be sorted by:\n'name', 'location', 'rooms_available', 'cost_per_room', rating'")
                     key = input('Sort by property: ')
                     order = input('Ascending/descending: ')
 
