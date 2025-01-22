@@ -1,6 +1,5 @@
 import json
 import os
-from venv import create
 
 #  running parameters
 clear_enabled = False
@@ -146,15 +145,7 @@ def search_by_location(hotels_data, location):
     if not hotels:
         raise ValueError('No hotels found in given location.')
 
-    for i in hotels:
-        keys = list(i.keys())
-        hotel = list(i.values())
-
-        for p in range(len(hotel)):
-            if p == 0:
-                print(f'{hotel[p]}')
-            else:
-                print(f'    {keys[p]}: {hotel[p]}')
+    display_hotels(hotels)
 
 
 def remove_booking(hotels_data, bookings_data):
@@ -367,7 +358,7 @@ if __name__ == "__main__":
                 case "create booking":
                     create_booking(data, bookings, True, user=input("Name: "), hotel=input("Hotel: "),
                            nights=input("Amount of nights: "), rooms=input("Number of rooms: "),
-                           confirmation=input('Confirm booking? (yes/no): '))
+                           confirmation=input('Confirm booking? (yes/no): ').lower())
                 case "search by location":
                     loc = input("Search for: ")
                     search_by_location(data, loc)

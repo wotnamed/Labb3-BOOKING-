@@ -108,15 +108,12 @@ def test_display_hotels(capsys):
     with pytest.raises(ValueError):
         display_hotels([{"aisdjw"}])
 
-
 def test_search_by_location(capsys):
-    hotels_data = get_data('hotels.json')
-
-    search_by_location(hotels_data, 'Columbus')
+    search_by_location(test_hotels_dataset, 'Stockholm')
 
     captured = capsys.readouterr()
 
-    assert captured.out == "Hotel Sigma\n    location: Columbus, Ohio, USA\n    rooms_available: 420\n    cost_per_room: 69\n    rating: 5.0\n"
+    assert captured.out == "Graze The Roof\n    location: Stockholm, Sweden\n    rooms_available: 20\n    cost_per_room: 399\n    rating: 4.5\n\n"
 
     with pytest.raises(ValueError):
-        search_by_location(hotels_data, 'asiudghwi')
+        search_by_location(test_hotels_dataset, 'asiudghwi')
