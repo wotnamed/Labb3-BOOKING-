@@ -301,7 +301,7 @@ def display_bookings(bookings_data, show_index):
         Bookings data provided is invalid.
     """
     if is_invalid_data(bookings_data):  # Check for incompatibility.
-        raise ValueError('An error occurred in the loading of bookings data. Invalid bookings data provided.')
+        raise ValueError('An error occurred in the loading of bookings data. Invalid bookings data provided or no bookings to display.')
 
     for item in bookings_data:  # For every booking.
         keys = list(item.keys())
