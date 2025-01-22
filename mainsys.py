@@ -1,6 +1,6 @@
 import json
 import os
-from multiprocessing.managers import Value
+from venv import create
 
 #  running parameters
 clear_enabled = False
@@ -41,6 +41,14 @@ def get_data(file_name):
 
     return data_list
 
+def is_invalid_data(dataset):
+    if not isinstance(dataset, list) and not all(isinstance(i, dict) for i in dataset):
+        return True
+
+    elif len(dataset) == 0:
+        return True
+
+    else: return False
 
 def display_hotels(hotels_data):
     """ Prints every hotel and its data.
@@ -55,18 +63,13 @@ def display_hotels(hotels_data):
     Raises
     ------
     ValueError
-        Invalid hotels dataset was provided, i.e. it is not a list of dictionaries.
-    ValueError
-        The list provided includes no data, i.e. the length of the list provided is equal to 0.
+        Invalid hotels dataset was provided, ex. it is not a list of dictionaries.
     ValueError
         Any other unexpected errors that are raised during the printing process. Could be for example that the dictionaries includes only keys and no values.
     """
 
-    if not isinstance(hotels_data, list) and not all(isinstance(i, dict) for i in hotels_data):
+    if is_invalid_data(hotels_data):
         raise ValueError('An error occurred in the loading of hotels data. Invalid hotels data provided.')
-
-    if len(hotels_data) == 0:
-        raise ValueError('An error occurred in the loading of hotels data. The list provided includes no data.')
 
     try:
         for h in hotels_data:
@@ -187,6 +190,16 @@ def remove_booking(hotels_data, bookings_data):
     save(bookings_data, hotels_data)
     print("Booking successfully removed.")
 
+def create_booking_dict(user, hotel, nights, rooms, total_cost):
+    new_booking = {
+        "booking name": user,
+        "hotel": hotel,
+        "nights booked": nights,
+        "rooms booked": rooms,
+        "total cost": total_cost
+    }
+
+    return new_booking
 
 def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, rooms, confirmation):
     """Creates a booking in the bookings_data database.
@@ -235,7 +248,7 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
         raise ValueError("Nights and rooms must be greater than 0.")
 
     hotel = next((item for item in hotels_data if hotel.lower() in item['name'].lower()), None)
-    #hotel = list(filter(lambda hotels_data : hotels_data['name'].lower() == hotel.lower(), hotels_data))[0]
+
     if not hotel:
         raise ValueError("Hotel does not exist.")
 
@@ -244,13 +257,7 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
     if rooms > hotel['rooms_available']:
         raise ValueError('Not enough rooms available.')
 
-    new_booking = {
-        "booking name": user,
-        "hotel": hotel['name'],
-        "nights booked": nights,
-        "rooms booked": rooms,
-        "total cost": total_cost
-    }
+    new_booking = create_booking_dict(user, hotel['name'], nights, rooms, total_cost)
 
     print(' ')
     for e in new_booking:
@@ -260,14 +267,13 @@ def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, room
         raise Exception('Booking cancelled by user.')
     elif confirmation.lower() == "no":
         raise Exception('Booking cancelled by user.')
-    else:
-        pass
+
     bookings_data.append(new_booking)
     hotels_data[hotels_data.index(hotel)]['rooms_available'] -= rooms
+
     if f_save:
         save(bookings_data, hotels_data)
-    else:
-        pass
+
     print('Booking successfully created.')
 
 
@@ -297,12 +303,10 @@ def display_bookings(bookings_data, show_index):
     Raises
     ------
     ValueError
-        No data to be printed has been provided.
+        Bookings data provided is invalid.
     """
-    if not bookings_data:
-        raise ValueError("No bookings to display.")
-    if not isinstance(bookings_data, list) and not all(isinstance(i, dict) for i in bookings_data):
-        raise ValueError('An error occurred in the loading of hotels data. Invalid hotels data provided.')
+    if is_invalid_data(bookings_data):
+        raise ValueError('An error occurred in the loading of bookings data. Invalid bookings data provided.')
 
     for bobject in bookings_data:
         keys = list(bobject.keys())

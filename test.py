@@ -64,6 +64,7 @@ def test_display_bookings(capsys):
         display_bookings([], False)
     with pytest.raises(ValueError):
         display_bookings("sfjofija", True)
+
 def test_create_booking():
     create_booking(test_hotels_dataset, test_bookings_dataset, False, 'Causality', 'Graze The Roof', 2, 3, "y")
     assert test_bookings_dataset == [
