@@ -40,6 +40,7 @@ def get_data(file_name):
 
     return data_list
 
+
 def is_invalid_data(dataset):  # Checks for incompatibility or corruption.
     if not isinstance(dataset, list) and not all(isinstance(i, dict) for i in dataset):
         return True  # The line above checks if the dataset isn't a list and if every item in the list isn't a dict.
@@ -48,6 +49,7 @@ def is_invalid_data(dataset):  # Checks for incompatibility or corruption.
         return True
 
     else: return False  # return False means that this function didn't flag the dataset as being "invalid".
+
 
 def display_hotels(hotels_data):
     """ Prints every hotel and its data.
@@ -181,6 +183,7 @@ def remove_booking(hotels_data, bookings_data):
     save(bookings_data, hotels_data)
     print("Booking successfully removed.")
 
+
 def create_booking_dict(user, hotel, nights, rooms, total_cost):  # Used to be found within create_booking().
     new_booking = {
         "booking name": user,
@@ -191,6 +194,7 @@ def create_booking_dict(user, hotel, nights, rooms, total_cost):  # Used to be f
     }
 
     return new_booking
+
 
 def create_booking(hotels_data, bookings_data, f_save, user, hotel, nights, rooms, confirmation):
     """Creates a booking in the bookings_data database.
